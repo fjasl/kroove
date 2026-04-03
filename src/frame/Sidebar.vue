@@ -9,6 +9,7 @@ import IconNote from '../assets/icons/IconNote.vue';
 import IconHistory from '../assets/icons/IconHistory.vue';
 import IconPlaying from '../assets/icons/IconPlaying.vue';
 import IconSettings from '../assets/icons/IconSettings.vue';
+import IconMenu from '../assets/icons/IconMenu.vue';
 
 const isExpanded = ref(false);
 const activeId = ref('home');
@@ -26,11 +27,9 @@ const select = (id: string) => (activeId.value = id);
 <template>
   <aside class="sidebar" :class="{ 'is-expanded': isExpanded }">
     <!-- 汉堡按钮：自成首部占位 -->
-    <div class="hamburger-container">
-      <div class="hamburger" @click="toggle">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+    <div class="hamburger-container" @click="toggle">
+      <div class="icon-box">
+        <IconMenu />
       </div>
     </div>
 
@@ -90,25 +89,26 @@ const select = (id: string) => (activeId.value = id);
 
 .hamburger-container {
   height: 48px;
-  flex-shrink: 0;
-}
-
-.hamburger {
-  height: 48px;
   width: 48px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   cursor: pointer;
-  gap: 4px;
+  flex-shrink: 0;
+  transition: background 0.2s;
 }
 
-.hamburger:hover {
-  background: rgba(255, 255, 255, 0.08); /* 统一的 48px 盒悬浮感 */
+.hamburger-container:hover {
+  background: rgba(255, 255, 255, 0.08);
 }
 
-.bar { width: 18px; height: 1px; background: white; }
+.icon-box {
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .nav-links {
   margin-top: 0; /* 修正：移除缝隙，形成连续侧边条 */
