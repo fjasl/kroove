@@ -3,6 +3,7 @@
 import Sidebar from './frame/Sidebar.vue'
 import MainContent from './frame/MainContent.vue'
 import PlayerBar from './frame/PlayerBar.vue'
+import FullScreenPlayer from './frame/FullScreenPlayer.vue'
 </script>
 
 <template>
@@ -17,6 +18,9 @@ import PlayerBar from './frame/PlayerBar.vue'
     </div>
     <!-- 底部播放栏 -->
     <PlayerBar />
+
+    <!-- 全屏播放页 -->
+    <FullScreenPlayer />
   </div>
 </template>
 

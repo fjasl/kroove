@@ -1,6 +1,7 @@
 <!-- src/frame/PlayerBar.vue -->
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
+import { usePlayerStore } from '../stores/player';
 import PlayerButton from '../component/PlayerButton.vue';
 import GrooveSlider from '../component/GrooveSlider.vue';
 
@@ -20,19 +21,11 @@ import IconVolume0 from '../assets/icons/IconVolume0.vue';
 import IconVolume1 from '../assets/icons/IconVolume1.vue';
 import IconVolume2 from '../assets/icons/IconVolume2.vue';
 
-// 模拟状态
-const isPlaying = ref(false);
-const isShuffle = ref(false);
-const isRepeat = ref(false);
-const volume = ref(70);
-const isMuted = ref(false);
+const playerStore = usePlayerStore();
 
-const currentTime = ref(9); // 0:09
-const duration = ref(236);  // 3:56
-
-const togglePlay = () => (isPlaying.value = !isPlaying.value);
-const toggleMute = () => (isMuted.value = !isMuted.value);
-const handleInfoClick = () => console.log("Track info clicked");
+const handleInfoClick = () => {
+  playerStore.toggleFullScreen();
+};
 
 // 时间格式化
 const formatTime = (seconds: number) => {
@@ -43,9 +36,9 @@ const formatTime = (seconds: number) => {
 
 // 计算当前应显示的音量图标
 const currentVolumeIcon = computed(() => {
-  if (isMuted.value) return IconVolumeMute;
-  if (volume.value === 0) return IconVolume0;
-  if (volume.value < 60) return IconVolume1;
+  if (playerStore.isMuted) return IconVolumeMute;
+  if (playerStore.volume === 0) return IconVolume0;
+  if (playerStore.volume < 60) return IconVolume1;
   return IconVolume2;
 });
 </script>
@@ -58,8 +51,8 @@ const currentVolumeIcon = computed(() => {
         <div class="placeholder-art"></div>
       </div>
       <div class="metadata">
-        <div class="song-name">葬花</div>
-        <div class="artist">THT</div>
+        <div class="song-name">燕无歇</div>
+        <div class="artist">蒋雪儿 • 燕无歇</div>
       </div>
     </div>
 
@@ -68,20 +61,20 @@ const currentVolumeIcon = computed(() => {
       <div class="main-buttons">
         <PlayerButton 
           :icon="IconShuffle" 
-          :active="isShuffle" 
+          :active="playerStore.isShuffle" 
           :icon-size="16"
-          @click="isShuffle = !isShuffle" 
+          @click="playerStore.isShuffle = !playerStore.isShuffle" 
         />
         
         <PlayerButton :icon="IconPrev" :icon-size="16" />
 
         <div class="play-trigger">
           <PlayerButton 
-            :icon="isPlaying ? IconPause : IconPlay" 
+            :icon="playerStore.isPlaying ? IconPause : IconPlay" 
             :size="42" 
-            :icon-size="isPlaying ? 16 : 18"
+            :icon-size="playerStore.isPlaying ? 16 : 18"
             :is-outline="true" 
-            @click="togglePlay"
+            @click="playerStore.togglePlay"
           />
         </div>
 
@@ -89,22 +82,22 @@ const currentVolumeIcon = computed(() => {
 
         <PlayerButton 
           :icon="IconRepeat" 
-          :active="isRepeat" 
+          :active="playerStore.isRepeat" 
           :icon-size="16"
-          @click="isRepeat = !isRepeat" 
+          @click="playerStore.isRepeat = !playerStore.isRepeat" 
         />
       </div>
       
       <!-- 播放进度条 -->
       <div class="progress-container">
-        <span class="time">{{ formatTime(currentTime) }}</span>
+        <span class="time">{{ formatTime(playerStore.currentTime) }}</span>
         <div class="slider-wrapper">
           <GrooveSlider 
-            v-model="currentTime" 
-            :max="duration" 
+            v-model="playerStore.currentTime" 
+            :max="playerStore.duration" 
           />
         </div>
-        <span class="time">{{ formatTime(duration) }}</span>
+        <span class="time">{{ formatTime(playerStore.duration) }}</span>
       </div>
     </div>
 
@@ -114,11 +107,11 @@ const currentVolumeIcon = computed(() => {
         <PlayerButton 
           :icon="currentVolumeIcon" 
           :icon-size="18" 
-          @click="toggleMute"
+          @click="playerStore.toggleMute"
         />
         <div class="volume-slider-wrapper">
           <GrooveSlider 
-            v-model="volume" 
+            v-model="playerStore.volume" 
             :max="100" 
           />
         </div>
@@ -172,7 +165,9 @@ const currentVolumeIcon = computed(() => {
 .placeholder-art {
   width: 100%;
   height: 100%;
-  background: linear-gradient(135deg, #444, #222);
+  background-image: url('https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?q=80&w=1000');
+  background-size: cover;
+  background-position: center;
 }
 
 .metadata {
