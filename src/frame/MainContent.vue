@@ -1,40 +1,190 @@
-<!-- src/components/MainContent.vue -->
-<script setup lang="ts"></script>
+<!-- src/frame/MainContent.vue -->
+<script setup lang="ts">
+import { ref } from 'vue'
+import SongListItem from '../component/SongListItem.vue'
+import EmptyState from '../component/EmptyState.vue'
+import SettingsView from '../component/SettingsView.vue'
+
+defineProps<{
+  activeSidebar?: string
+}>()
+
+const activeTab = ref('songs')
+
+const tabs = [
+  { id: 'songs', label: '歌曲' },
+  { id: 'artists', label: '歌手' },
+  { id: 'albums', label: '专辑' }
+]
+
+const mockSongs = [
+  { id: 1, title: '错位时空', artist: '艾辰', album: '未知专辑', genre: '未知流派', duration: '3:34' },
+  { id: 2, title: '落日与晚风', artist: 'IN-K&王忻辰&苏星婕', album: '未知专辑', genre: '未知流派', duration: '2:55' },
+  { id: 3, title: '烟囱和星斗', artist: '袁小葳', album: '未知专辑', genre: '未知流派', duration: '3:14' },
+  { id: 4, title: 'One Last Kiss', artist: '宇多田ヒカル', album: 'One Last Kiss', genre: 'Blues', duration: '4:12' },
+  { id: 5, title: 'Luv Letter', artist: 'DJ OKAWARI', album: 'MIRROR', genre: 'Blues', duration: '4:30' },
+  { id: 6, title: 'Flower Dance', artist: 'DJ OKAWARI', album: 'A Cup Of Coffee', genre: '未知流派', duration: '4:23', isActive: true },
+  { id: 7, title: '克罗地亚狂想曲', artist: 'Maksim(马克西姆)', album: '未知专辑', genre: '未知流派', duration: '3:33' },
+  { id: 8, title: 'Cold Winter', artist: 'July', album: '未知专辑', genre: '未知流派', duration: '3:44' },
+  { id: 9, title: '错位时空', artist: '艾辰', album: '未知专辑', genre: '未知流派', duration: '3:34' },
+  { id: 10, title: '落日与晚风', artist: 'IN-K&王忻辰&苏星婕', album: '未知专辑', genre: '未知流派', duration: '2:55' },
+  { id: 11, title: '烟囱和星斗', artist: '袁小葳', album: '未知专辑', genre: '未知流派', duration: '3:14' },
+  { id: 12, title: 'One Last Kiss', artist: '宇多田ヒカル', album: 'One Last Kiss', genre: 'Blues', duration: '4:12' },
+  { id: 13, title: 'Luv Letter', artist: 'DJ OKAWARI', album: 'MIRROR', genre: 'Blues', duration: '4:30' },
+  { id: 14, title: 'Flower Dance', artist: 'DJ OKAWARI', album: 'A Cup Of Coffee', genre: '未知流派', duration: '4:23', isActive: true },
+  { id: 15, title: '克罗地亚狂想曲', artist: 'Maksim(马克西姆)', album: '未知专辑', genre: '未知流派', duration: '3:33' },
+  { id: 16, title: 'Cold Winter', artist: 'July', album: '未知专辑', genre: '未知流派', duration: '3:44' },
+  { id: 17, title: '错位时空', artist: '艾辰', album: '未知专辑', genre: '未知流派', duration: '3:34' },
+  { id: 18, title: '落日与晚风', artist: 'IN-K&王忻辰&苏星婕', album: '未知专辑', genre: '未知流派', duration: '2:55' },
+  { id: 19, title: '烟囱和星斗', artist: '袁小葳', album: '未知专辑', genre: '未知流派', duration: '3:14' },
+  { id: 20, title: 'One Last Kiss', artist: '宇多田ヒカル', album: 'One Last Kiss', genre: 'Blues', duration: '4:12' },
+  { id: 21, title: 'Luv Letter', artist: 'DJ OKAWARI', album: 'MIRROR', genre: 'Blues', duration: '4:30' },
+  { id: 22, title: 'Flower Dance', artist: 'DJ OKAWARI', album: 'A Cup Of Coffee', genre: '未知流派', duration: '4:23', isActive: true },
+  { id: 23, title: '克罗地亚狂想曲', artist: 'Maksim(马克西姆)', album: '未知专辑', genre: '未知流派', duration: '3:33' },
+  { id: 24, title: 'Cold Winter', artist: 'July', album: '未知专辑', genre: '未知流派', duration: '3:44' }
+]
+</script>
 
 <template>
   <main class="main-content">
-    <header class="content-header">
-      <h1>我的音乐</h1>
-      <nav class="tabs">
-        <span class="active">歌曲</span>
-        <span>歌手</span>
-        <span>专辑</span>
-      </nav>
-    </header>
 
-    <section class="song-list-placeholder">
-      <div v-for="i in 10" :key="i" class="list-item">
-        🎵 示例歌曲名称 - 艺术家名称 {{ i }}
+    <template v-if="activeSidebar === 'home' || !activeSidebar">
+      <header class="content-header">
+        <h1>我的音乐</h1>
+        <nav class="tabs">
+          <span v-for="tab in tabs" :key="tab.id" :class="{ active: activeTab === tab.id }" @click="activeTab = tab.id">
+            {{ tab.label }}
+          </span>
+        </nav>
+      </header>
+
+      <div class="content-area">
+        <!-- 歌曲列表视图 -->
+        <section v-if="activeTab === 'songs'" class="view-songs">
+          <div class="empty-hint" v-if="mockSongs.length === 0">
+            <EmptyState />
+          </div>
+
+          <div class="song-list" v-else>
+            <SongListItem v-for="song in mockSongs" :key="song.id" :title="song.title" :artist="song.artist"
+              :album="song.album" :genre="song.genre" :duration="song.duration" :isActive="song.isActive" />
+          </div>
+        </section>
+
+        <!-- 歌手/专辑 空页面视图 -->
+        <section v-else class="view-empty">
+          <EmptyState />
+        </section>
       </div>
-    </section>
+    </template>
+
+    <!-- 侧边栏除了“我的音乐”之外的其他功能视图 -->
+    <template v-else-if="activeSidebar === 'settings'">
+      <SettingsView />
+    </template>
+
+    <template v-else>
+      <div class="global-empty-area">
+        <EmptyState :message="activeSidebar === 'recent' ? '你还没有最近播放的内容哦' :
+          (activeSidebar === 'playing' ? '当前播放列表中并没有音乐' : '施工中...')" />
+      </div>
+    </template>
+
   </main>
 </template>
 
 <style scoped>
 .main-content {
   flex: 1;
-  background: #000;
-  color: #fff;
-  padding: 40px;
-  overflow-y: auto;
+  background: black;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto; /* 给整个外层开启滚动，使得滚动条靠在最右侧且贯穿上下 */
+  overflow-x: hidden;
 }
 
-h1 { font-size: 42px; font-weight: 300; margin-bottom: 20px; }
+.content-header {
+  position: sticky;
+  top: 0;
+  background: #000; /* 改回纯黑，不透明 */
+  z-index: 10;
+  padding: 40px 40px 0 40px;
+}
 
-.tabs { display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 1px solid #333; }
-.tabs span { padding-bottom: 10px; cursor: pointer; color: #aaa; }
-.tabs span.active { color: #fff; border-bottom: 2px solid #0078d4; }
+.content-header h1 {
+  font-size: 42px;
+  font-weight: 300;
+  margin-bottom: 20px;
+}
 
-.song-list-placeholder { display: flex; flex-direction: column; gap: 10px; }
-.list-item { padding: 15px; background: #111; border-radius: 4px; }
+.tabs {
+  display: flex;
+  gap: 30px;
+  margin-bottom: 20px;
+  /* 移除底边框，或让其透明，因为滚动过去时会更自然 */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tabs span {
+  padding-bottom: 10px;
+  cursor: pointer;
+  color: #aaa;
+  font-size: 16px;
+  transition: color 0.2s;
+}
+
+.tabs span:hover {
+  color: #ddd;
+}
+
+.tabs span.active {
+  color: #fff;
+  border-bottom: 2px solid #0078d4;
+}
+
+.content-area {
+  padding: 0 40px 40px 40px; /* 补回内边距 */
+  display: flex;
+  flex-direction: column;
+  min-height: calc(100vh - 180px); /* 保证空状态依然居中 */
+}
+
+.view-songs {
+  display: flex;
+  flex-direction: column;
+}
+
+.list-controls {
+  display: flex;
+  gap: 16px;
+  font-size: 13px;
+  color: #aaa;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.list-controls a {
+  color: #0078d4;
+  text-decoration: none;
+}
+
+.list-controls a:hover {
+  text-decoration: underline;
+}
+
+.song-list {
+  display: flex;
+  flex-direction: column;
+}
+
+.view-empty,
+.global-empty-area {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  min-height: 400px;
+  height: 100%;
+}
 </style>

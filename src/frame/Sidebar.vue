@@ -12,7 +12,9 @@ import IconSettings from '../assets/icons/IconSettings.vue';
 import IconMenu from '../assets/icons/IconMenu.vue';
 
 const isExpanded = ref(false);
-const activeId = ref('home');
+
+const props = defineProps<{ activeId?: string }>();
+const emit = defineEmits<{ (e: 'update:activeId', id: string): void }>();
 
 const menuItems = [
   { id: 'home', icon: IconNote, label: '我的音乐' },
@@ -21,7 +23,7 @@ const menuItems = [
 ];
 
 const toggle = () => (isExpanded.value = !isExpanded.value);
-const select = (id: string) => (activeId.value = id);
+const select = (id: string) => emit('update:activeId', id);
 </script>
 
 <template>
